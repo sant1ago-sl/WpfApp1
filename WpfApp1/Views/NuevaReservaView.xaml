@@ -1,0 +1,53 @@
+<UserControl x:Class="WpfApp1.Views.NuevaReservaView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:WpfApp1.ViewModels"
+             mc:Ignorable="d">
+    <GroupBox Header="Registro de Reserva — Modo Conectado">
+        <Grid Margin="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="400"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Margin="8">
+                <Label Content="Aula *"/>
+                <ComboBox ItemsSource="{Binding Aulas}"
+                          SelectedItem="{Binding AulaSeleccionada}"
+                          DisplayMemberPath="Nombre"
+                          Margin="0,0,0,8"/>
+
+                <Label Content="Fecha *"/>
+                <DatePicker SelectedDate="{Binding Fecha}" Margin="0,0,0,8"/>
+
+                <Label Content="Horario *"/>
+                <TextBox Text="{Binding HoraTexto, UpdateSourceTrigger=PropertyChanged}"
+                         ToolTip="Formato de 24 horas, ejemplo: 08:30"/>
+
+                <Label Content="Descripción / Motivo *"/>
+                <TextBox Text="{Binding Motivo, UpdateSourceTrigger=PropertyChanged}"
+                         AcceptsReturn="True" Height="70"
+                         TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+
+                <TextBlock Text="{Binding Mensaje}"
+                           Foreground="{StaticResource TextoPrimarioBrush}"
+                           FontWeight="Bold" Margin="0,4,0,8"
+                           TextWrapping="Wrap"/>
+
+                <Button Content="Guardar reserva" Command="{Binding ReservarCommand}"
+                        Height="40"/>
+            </StackPanel>
+
+            <Border Grid.Column="1" Margin="16,8" Padding="16"
+                    Background="{StaticResource FilaAlternaBrush}"
+                    BorderBrush="{StaticResource BordeBrush}" BorderThickness="1">
+                <TextBlock TextWrapping="Wrap" Foreground="{StaticResource TextoPrimarioBrush}">
+                    <Run Text="Validación previa:" FontWeight="Bold"/><LineBreak/>
+                    Antes de guardar, el sistema consulta si ya existe otra reserva con el mismo aula, fecha y horario. De encontrarse coincidencia, la operación se cancela y se muestra un aviso.
+                </TextBlock>
+            </Border>
+        </Grid>
+    </GroupBox>
+</UserControl>

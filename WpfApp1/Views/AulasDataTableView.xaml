@@ -1,0 +1,29 @@
+<UserControl x:Class="WpfApp1.Views.AulasDataTableView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:WpfApp1.ViewModels"
+             mc:Ignorable="d">
+    <GroupBox Header="Consulta de Aulas — Modo Desconectado">
+        <Grid Margin="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+                <Button Content="Cargar registros" Command="{Binding CargarCommand}"/>
+                <TextBlock Text="Datos obtenidos con SqlDataAdapter; la conexión se cierra antes de mostrar."
+                           VerticalAlignment="Center" Margin="12,0,0,0"
+                           Foreground="{StaticResource TextoSecundarioBrush}" FontSize="12"/>
+            </StackPanel>
+
+            <DataGrid Grid.Row="1"
+                      ItemsSource="{Binding AulasTable}"
+                      AutoGenerateColumns="True"
+                      IsReadOnly="True"
+                      CanUserAddRows="False"/>
+        </Grid>
+    </GroupBox>
+</UserControl>
