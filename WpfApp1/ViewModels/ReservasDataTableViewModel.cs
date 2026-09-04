@@ -1,4 +1,6 @@
+using System;
 using System.Data;
+using System.Windows;
 using System.Windows.Input;
 using WpfApp1.Services;
 
@@ -25,6 +27,17 @@ public class ReservasDataTableViewModel : ViewModelBase
 
     public void Cargar()
     {
-        ReservasTable = _db.GetReservasDataTable();
+        try
+        {
+            ReservasTable = _db.GetReservasDataTable();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                $"No se pudieron cargar las reservas.\n\nDetalle: {ex.Message}",
+                "Error al cargar datos",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+        }
     }
 }

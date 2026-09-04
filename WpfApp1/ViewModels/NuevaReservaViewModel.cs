@@ -73,9 +73,16 @@ public class NuevaReservaViewModel : ViewModelBase
 
     private void CargarAulas()
     {
-        Aulas.Clear();
-        foreach (var a in _db.GetAulasCombo())
-            Aulas.Add(a);
+        try
+        {
+            Aulas.Clear();
+            foreach (var a in _db.GetAulasCombo())
+                Aulas.Add(a);
+        }
+        catch (Exception)
+        {
+            Mensaje = "No se pudieron cargar las aulas. Verifique la conexión a la base de datos.";
+        }
     }
 
     private void EjecutarReservar(object? parametro)
@@ -88,14 +95,21 @@ public class NuevaReservaViewModel : ViewModelBase
             return;
         }
 
-        if (_db.ExisteReserva(AulaSeleccionada.AulaId, Fecha, Hora))
+        try
         {
-            Mensaje = "Ya existe una reserva con la misma aula, fecha y hora.";
-            return;
-        }
+            if (_db.ExisteReserva(AulaSeleccionada.AulaId, Fecha, Hora))
+            {
+                Mensaje = "Ya existe una reserva con la misma aula, fecha y hora.";
+                return;
+            }
 
-        _db.InsertarReserva(AulaSeleccionada.AulaId, _usuarioId, Fecha, Hora, Motivo);
-        Mensaje = "Reserva creada exitosamente.";
-        ReservaCreada?.Invoke(this, EventArgs.Empty);
+            _db.InsertarReserva(AulaSeleccionada.AulaId, _usuarioId, Fecha, Hora, Motivo);
+            Mensaje = "Reserva creada exitosamente.";
+            ReservaCreada?.Invoke(this, EventArgs.Empty);
+        }
+        catch (Exception)
+        {
+            Mensaje = "No se pudo guardar la reserva. Verifique la conexión a la base de datos.";
+        }
     }
 }

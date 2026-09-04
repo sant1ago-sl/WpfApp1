@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Windows.Input;
+using Microsoft.Data.SqlClient;
 using WpfApp1.Models;
 using WpfApp1.Services;
 
@@ -49,13 +50,24 @@ public class LoginViewModel : ViewModelBase
             return;
         }
 
-        var usuario = _db.ValidarLogin(Username, Password);
-        if (usuario is null)
+        try
         {
-            ErrorMessage = "Usuario o contraseña incorrectos.";
-            return;
-        }
+            var usuario = _db.ValidarLogin(Username, Password);
+            if (usuario is null)
+            {
+                ErrorMessage = "Usuario o contraseña incorrectos.";
+                return;
+            }
 
-        LoginSucceeded?.Invoke(this, usuario);
+            LoginSucceeded?.Invoke(this, usuario);
+        }
+        catch (SqlException)
+        {
+            ErrorMessage = "No se pudo conectar a la base de datos. Verifique que el servicio esté activo.";
+        }
+        catch (Exception)
+        {
+            ErrorMessage = "Ocurrió un error inesperado al iniciar sesión.";
+        }
     }
 }
