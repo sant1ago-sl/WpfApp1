@@ -1,5 +1,4 @@
-using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using WpfApp1.Models;
@@ -26,16 +25,17 @@ public class AulasObjetosViewModel : ViewModelBase
     public AulasObjetosViewModel(DatabaseService db)
     {
         _db = db;
-        CargarCommand = new RelayCommand(_ => Cargar());
-        BuscarCommand = new RelayCommand(_ => Buscar());
+        CargarCommand = new AsyncRelayCommand(_ => CargarAsync());
+        BuscarCommand = new AsyncRelayCommand(_ => BuscarAsync());
     }
 
-    public void Cargar()
+    public async Task CargarAsync()
     {
         try
         {
+            var lista = await _db.GetAulasListAsync();
             Aulas.Clear();
-            foreach (var a in _db.GetAulasList())
+            foreach (var a in lista)
                 Aulas.Add(a);
         }
         catch (Exception ex)
@@ -48,12 +48,13 @@ public class AulasObjetosViewModel : ViewModelBase
         }
     }
 
-    private void Buscar()
+    private async Task BuscarAsync()
     {
         try
         {
+            var lista = await _db.BuscarAulasAsync(Busqueda);
             Aulas.Clear();
-            foreach (var a in _db.BuscarAulas(Busqueda))
+            foreach (var a in lista)
                 Aulas.Add(a);
         }
         catch (Exception ex)

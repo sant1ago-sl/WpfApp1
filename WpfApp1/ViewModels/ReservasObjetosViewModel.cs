@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using WpfApp1.Models;
@@ -25,16 +25,17 @@ public class ReservasObjetosViewModel : ViewModelBase
     public ReservasObjetosViewModel(DatabaseService db)
     {
         _db = db;
-        CargarCommand = new RelayCommand(_ => Cargar());
-        BuscarCommand = new RelayCommand(_ => Buscar());
+        CargarCommand = new AsyncRelayCommand(_ => CargarAsync());
+        BuscarCommand = new AsyncRelayCommand(_ => BuscarAsync());
     }
 
-    public void Cargar()
+    public async Task CargarAsync()
     {
         try
         {
+            var lista = await _db.GetReservasListAsync();
             Reservas.Clear();
-            foreach (var r in _db.GetReservasList())
+            foreach (var r in lista)
                 Reservas.Add(r);
         }
         catch (Exception ex)
@@ -47,12 +48,13 @@ public class ReservasObjetosViewModel : ViewModelBase
         }
     }
 
-    private void Buscar()
+    private async Task BuscarAsync()
     {
         try
         {
+            var lista = await _db.BuscarReservasPorFechaAsync(FechaBusqueda);
             Reservas.Clear();
-            foreach (var r in _db.BuscarReservasPorFecha(FechaBusqueda))
+            foreach (var r in lista)
                 Reservas.Add(r);
         }
         catch (Exception ex)

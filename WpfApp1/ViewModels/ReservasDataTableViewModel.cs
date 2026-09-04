@@ -1,5 +1,4 @@
-using System;
-using System.Data;
+﻿using System.Data;
 using System.Windows;
 using System.Windows.Input;
 using WpfApp1.Services;
@@ -22,14 +21,14 @@ public class ReservasDataTableViewModel : ViewModelBase
     public ReservasDataTableViewModel(DatabaseService db)
     {
         _db = db;
-        CargarCommand = new RelayCommand(_ => Cargar());
+        CargarCommand = new AsyncRelayCommand(_ => CargarAsync());
     }
 
-    public void Cargar()
+    public async Task CargarAsync()
     {
         try
         {
-            ReservasTable = _db.GetReservasDataTable();
+            ReservasTable = await _db.GetReservasDataTableAsync();
         }
         catch (Exception ex)
         {

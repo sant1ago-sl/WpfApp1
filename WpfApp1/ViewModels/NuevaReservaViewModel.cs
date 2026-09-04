@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using WpfApp1.Models;
 using WpfApp1.Services;
@@ -67,16 +67,18 @@ public class NuevaReservaViewModel : ViewModelBase
     {
         _db = db;
         _usuarioId = usuarioId;
-        ReservarCommand = new RelayCommand(EjecutarReservar, _ => AulaSeleccionada is not null);
-        CargarAulas();
+        ReservarCommand = new AsyncRelayCommand(EjecutarReservarAsync, _ => AulaSeleccionada is not null);
+        // Fire-and-forget controlado: carga las aulas al inicializar el VM
+        _ = CargarAulasAsync();
     }
 
-    private void CargarAulas()
+    private async Task CargarAulasAsync()
     {
         try
         {
+            var aulas = await _db.GetAulasComboAsync();
             Aulas.Clear();
-            foreach (var a in _db.GetAulasCombo())
+            foreach (var a in aulas)
                 Aulas.Add(a);
         }
         catch (Exception)
@@ -85,7 +87,7 @@ public class NuevaReservaViewModel : ViewModelBase
         }
     }
 
-    private void EjecutarReservar(object? parametro)
+    private async Task EjecutarReservarAsync(object? parametro)
     {
         Mensaje = string.Empty;
 
@@ -97,13 +99,13 @@ public class NuevaReservaViewModel : ViewModelBase
 
         try
         {
-            if (_db.ExisteReserva(AulaSeleccionada.AulaId, Fecha, Hora))
+            if (await _db.ExisteReservaAsync(AulaSeleccionada.AulaId, Fecha, Hora))
             {
                 Mensaje = "Ya existe una reserva con la misma aula, fecha y hora.";
                 return;
             }
 
-            _db.InsertarReserva(AulaSeleccionada.AulaId, _usuarioId, Fecha, Hora, Motivo);
+            await _db.InsertarReservaAsync(AulaSeleccionada.AulaId, _usuarioId, Fecha, Hora, Motivo);
             Mensaje = "Reserva creada exitosamente.";
             ReservaCreada?.Invoke(this, EventArgs.Empty);
         }

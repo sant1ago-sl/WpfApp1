@@ -1,8 +1,6 @@
-using System.Collections.ObjectModel;
-using System.Data;
+﻿using System.Data;
 using System.Windows;
 using System.Windows.Input;
-using WpfApp1.Models;
 using WpfApp1.Services;
 
 namespace WpfApp1.ViewModels;
@@ -23,14 +21,14 @@ public class AulasDataTableViewModel : ViewModelBase
     public AulasDataTableViewModel(DatabaseService db)
     {
         _db = db;
-        CargarCommand = new RelayCommand(_ => Cargar());
+        CargarCommand = new AsyncRelayCommand(_ => CargarAsync());
     }
 
-    public void Cargar()
+    public async Task CargarAsync()
     {
         try
         {
-            AulasTable = _db.GetAulasDataTable();
+            AulasTable = await _db.GetAulasDataTableAsync();
         }
         catch (Exception ex)
         {
