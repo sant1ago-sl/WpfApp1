@@ -1,52 +1,76 @@
-<UserControl x:Class="WpfApp1.Views.NuevaReservaView"
+﻿<UserControl x:Class="WpfApp1.Views.NuevaReservaView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:WpfApp1.ViewModels"
              mc:Ignorable="d">
+
     <GroupBox Header="Registro de Reserva — Modo Conectado">
-        <Grid Margin="4">
+        <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="400"/>
+                <ColumnDefinition Width="360"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="0" Margin="8">
+            <!-- Formulario -->
+            <StackPanel Grid.Column="0" Margin="4,4,16,4">
+
                 <Label Content="Aula *"/>
                 <ComboBox ItemsSource="{Binding Aulas}"
                           SelectedItem="{Binding AulaSeleccionada}"
-                          DisplayMemberPath="Nombre"
-                          Margin="0,0,0,8"/>
+                          DisplayMemberPath="Nombre"/>
 
                 <Label Content="Fecha *"/>
-                <DatePicker SelectedDate="{Binding Fecha}" Margin="0,0,0,8"/>
+                <DatePicker SelectedDate="{Binding Fecha}" Margin="0,0,0,10"/>
 
-                <Label Content="Horario *"/>
-                <TextBox Text="{Binding HoraTexto, UpdateSourceTrigger=PropertyChanged}"
-                         ToolTip="Formato de 24 horas, ejemplo: 08:30"/>
+                <Label Content="Horario * (formato 24 h, ej: 08:30)"/>
+                <TextBox Text="{Binding HoraTexto, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <Label Content="Descripción / Motivo *"/>
+                <Label Content="Descripcion / Motivo *"/>
                 <TextBox Text="{Binding Motivo, UpdateSourceTrigger=PropertyChanged}"
-                         AcceptsReturn="True" Height="70"
-                         TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+                         AcceptsReturn="True" Height="72"
+                         TextWrapping="Wrap"
+                         VerticalScrollBarVisibility="Auto"/>
 
                 <TextBlock Text="{Binding Mensaje}"
-                           Foreground="{StaticResource TextoPrimarioBrush}"
-                           FontWeight="Bold" Margin="0,4,0,8"
-                           TextWrapping="Wrap"/>
+                           Foreground="{StaticResource TextoSecundarioBrush}"
+                           FontWeight="SemiBold" FontSize="12"
+                           Margin="0,4,0,8" TextWrapping="Wrap"/>
 
-                <Button Content="Guardar reserva" Command="{Binding ReservarCommand}"
-                        Height="40"/>
+                <Button Content="Guardar reserva"
+                        Command="{Binding ReservarCommand}"
+                        Height="44"/>
             </StackPanel>
 
-            <Border Grid.Column="1" Margin="16,8" Padding="16"
-                    Background="{StaticResource FilaAlternaBrush}"
-                    BorderBrush="{StaticResource BordeBrush}" BorderThickness="1">
-                <TextBlock TextWrapping="Wrap" Foreground="{StaticResource TextoPrimarioBrush}">
-                    <Run Text="Validación previa:" FontWeight="Bold"/><LineBreak/>
-                    Antes de guardar, el sistema consulta si ya existe otra reserva con el mismo aula, fecha y horario. De encontrarse coincidencia, la operación se cancela y se muestra un aviso.
-                </TextBlock>
+            <!-- Panel informativo -->
+            <Border Grid.Column="1" Padding="18"
+                    Background="{StaticResource SombrioBrush}"
+                    BorderBrush="{StaticResource BordeBrush}" BorderThickness="1"
+                    CornerRadius="10" Margin="4">
+                <StackPanel>
+                    <TextBlock Text="Como funciona el registro"
+                               FontWeight="Bold" FontSize="13"
+                               Foreground="{StaticResource TextoPrimarioBrush}"
+                               Margin="0,0,0,10"/>
+
+                    <TextBlock TextWrapping="Wrap" LineHeight="20"
+                               FontSize="12" Foreground="{StaticResource TextoSecundarioBrush}">
+Antes de guardar, el sistema verifica que no exista otra reserva con el mismo aula, fecha y horario.
+                    </TextBlock>
+
+                    <Border Height="1" Background="{StaticResource BordeBrush}" Margin="0,14"/>
+
+                    <TextBlock Text="Requisitos" FontWeight="SemiBold" FontSize="12"
+                               Foreground="{StaticResource TextoPrimarioBrush}" Margin="0,0,0,8"/>
+
+                    <TextBlock FontSize="12" Foreground="{StaticResource TextoSecundarioBrush}"
+                               TextWrapping="Wrap" LineHeight="22">
+  * Seleccionar un aula de la lista
+  * Elegir una fecha valida
+  * Ingresar el horario en formato HH:mm
+  * Escribir el motivo de la reserva
+                    </TextBlock>
+                </StackPanel>
             </Border>
         </Grid>
     </GroupBox>

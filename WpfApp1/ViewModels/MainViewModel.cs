@@ -1,4 +1,4 @@
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using WpfApp1.Services;
 
 namespace WpfApp1.ViewModels;
@@ -38,18 +38,19 @@ public class MainViewModel : ViewModelBase
         _db = db;
         UsuarioActual = $"Bienvenido, {nombreUsuario}";
 
-        AulasDataTableVM = new AulasDataTableViewModel(db);
-        AulasObjetosVM = new AulasObjetosViewModel(db);
+        AulasDataTableVM    = new AulasDataTableViewModel(db);
+        AulasObjetosVM      = new AulasObjetosViewModel(db);
         ReservasDataTableVM = new ReservasDataTableViewModel(db);
-        ReservasObjetosVM = new ReservasObjetosViewModel(db);
-        NuevaReservaVM = new NuevaReservaViewModel(db, usuarioId);
+        ReservasObjetosVM   = new ReservasObjetosViewModel(db);
+        NuevaReservaVM      = new NuevaReservaViewModel(db, usuarioId);
 
         NuevaReservaVM.ReservaCreada += (_, _) => CurrentView = null;
 
-        VerAulasDataTableCommand = new RelayCommand(_ => { AulasDataTableVM.Cargar(); CurrentView = AulasDataTableVM; });
-        VerAulasObjetosCommand = new RelayCommand(_ => { AulasObjetosVM.Cargar(); CurrentView = AulasObjetosVM; });
-        VerReservasDataTableCommand = new RelayCommand(_ => { ReservasDataTableVM.Cargar(); CurrentView = ReservasDataTableVM; });
-        VerReservasObjetosCommand = new RelayCommand(_ => { ReservasObjetosVM.Cargar(); CurrentView = ReservasObjetosVM; });
-        VerNuevaReservaCommand = new RelayCommand(_ => CurrentView = NuevaReservaVM);
+        // Muestra la vista de inmediato y carga los datos en segundo plano (sin congelar UI)
+        VerAulasDataTableCommand    = new AsyncRelayCommand(async _ => { CurrentView = AulasDataTableVM;    await AulasDataTableVM.CargarAsync(); });
+        VerAulasObjetosCommand      = new AsyncRelayCommand(async _ => { CurrentView = AulasObjetosVM;      await AulasObjetosVM.CargarAsync(); });
+        VerReservasDataTableCommand = new AsyncRelayCommand(async _ => { CurrentView = ReservasDataTableVM; await ReservasDataTableVM.CargarAsync(); });
+        VerReservasObjetosCommand   = new AsyncRelayCommand(async _ => { CurrentView = ReservasObjetosVM;   await ReservasObjetosVM.CargarAsync(); });
+        VerNuevaReservaCommand      = new RelayCommand(_ => CurrentView = NuevaReservaVM);
     }
 }

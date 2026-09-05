@@ -1,4 +1,5 @@
-using System.Data;
+﻿using System.Data;
+using System.Windows;
 using System.Windows.Input;
 using WpfApp1.Services;
 
@@ -20,11 +21,22 @@ public class ReservasDataTableViewModel : ViewModelBase
     public ReservasDataTableViewModel(DatabaseService db)
     {
         _db = db;
-        CargarCommand = new RelayCommand(_ => Cargar());
+        CargarCommand = new AsyncRelayCommand(_ => CargarAsync());
     }
 
-    public void Cargar()
+    public async Task CargarAsync()
     {
-        ReservasTable = _db.GetReservasDataTable();
+        try
+        {
+            ReservasTable = await _db.GetReservasDataTableAsync();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                $"No se pudieron cargar las reservas.\n\nDetalle: {ex.Message}",
+                "Error al cargar datos",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+        }
     }
 }

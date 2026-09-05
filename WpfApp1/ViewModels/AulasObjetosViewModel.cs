@@ -1,4 +1,5 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Input;
 using WpfApp1.Models;
 using WpfApp1.Services;
@@ -24,21 +25,45 @@ public class AulasObjetosViewModel : ViewModelBase
     public AulasObjetosViewModel(DatabaseService db)
     {
         _db = db;
-        CargarCommand = new RelayCommand(_ => Cargar());
-        BuscarCommand = new RelayCommand(_ => Buscar());
+        CargarCommand = new AsyncRelayCommand(_ => CargarAsync());
+        BuscarCommand = new AsyncRelayCommand(_ => BuscarAsync());
     }
 
-    public void Cargar()
+    public async Task CargarAsync()
     {
-        Aulas.Clear();
-        foreach (var a in _db.GetAulasList())
-            Aulas.Add(a);
+        try
+        {
+            var lista = await _db.GetAulasListAsync();
+            Aulas.Clear();
+            foreach (var a in lista)
+                Aulas.Add(a);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                $"No se pudieron cargar las aulas.\n\nDetalle: {ex.Message}",
+                "Error al cargar datos",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+        }
     }
 
-    private void Buscar()
+    private async Task BuscarAsync()
     {
-        Aulas.Clear();
-        foreach (var a in _db.BuscarAulas(Busqueda))
-            Aulas.Add(a);
+        try
+        {
+            var lista = await _db.BuscarAulasAsync(Busqueda);
+            Aulas.Clear();
+            foreach (var a in lista)
+                Aulas.Add(a);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                $"No se pudo realizar la búsqueda.\n\nDetalle: {ex.Message}",
+                "Error al buscar",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+        }
     }
 }

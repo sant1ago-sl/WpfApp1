@@ -1,7 +1,6 @@
-using System.Collections.ObjectModel;
-using System.Data;
+﻿using System.Data;
+using System.Windows;
 using System.Windows.Input;
-using WpfApp1.Models;
 using WpfApp1.Services;
 
 namespace WpfApp1.ViewModels;
@@ -22,11 +21,22 @@ public class AulasDataTableViewModel : ViewModelBase
     public AulasDataTableViewModel(DatabaseService db)
     {
         _db = db;
-        CargarCommand = new RelayCommand(_ => Cargar());
+        CargarCommand = new AsyncRelayCommand(_ => CargarAsync());
     }
 
-    public void Cargar()
+    public async Task CargarAsync()
     {
-        AulasTable = _db.GetAulasDataTable();
+        try
+        {
+            AulasTable = await _db.GetAulasDataTableAsync();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                $"No se pudieron cargar las aulas.\n\nDetalle: {ex.Message}",
+                "Error al cargar datos",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+        }
     }
 }
