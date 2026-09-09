@@ -6,3 +6,7 @@ Sistema de escritorio desarrollado en WPF para la gestión de reservas de aulas.
 
 - **Usuario:** jperez
 - **Contraseña:** 123456
+
+Integrantes:
+- Flores Revatta Emanuel José Julián
+- Salas Pérez Santiago Agustín
